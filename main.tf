@@ -97,7 +97,42 @@ resource "aws_instance" "shivani_sample_ec2" {
 }
 
 
+#Task Definition: Run this Docker image from ECR
+resource "aws_ecs_task_definition" "app_task" {
+  family                   = "app-task"
+  network_mode             = "bridge"
+  requires_compatibilities = ["EC2"]
+  cpu                      = "256"
+  memory                   = "512"
+  execution_role_arn      = aws_iam_role.ec2_role.arn
 
+  container_definitions = jsonencode([
+    {
+      name      = "app-container"
+      image     = "411233202089.dkr.ecr.us-east-2.amazonaws.com/app123:v0.1"
+      essential = true
+
+      portMappings = [
+        {
+          containerPort = 8080
+          hostPort      = 8080
+        }
+      ]
+    }
+  ])
+}
+
+
+#Keeps your app alive: If container crashes, ECS restarts it: Always maintains 1 running container
+resource "aws_ecs_service" "app_service" {
+  name            = "app-service"
+  cluster         = aws_ecs_cluster.app_cluster.id
+  task_definition = aws_ecs_task_definition.app_task.arn
+  desired_count   = 1
+  launch_type     = "EC2"
+
+  depends_on = [aws_instance.shivani_sample_ec2]
+}
 
 
 
