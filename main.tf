@@ -31,17 +31,7 @@ resource "aws_iam_instance_profile" "ec2_profile" {
   role = aws_iam_role.ec2_role.name
 }
 
-#EC2 Instance
-resource "aws_instance" "jenkins_server" {
-  ami           = "ami-0c55b159cbfafe1f0" # Amazon Linux (update if needed)
-  instance_type = var.instance_type
 
-  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
-
-  tags = {
-    Name = "Jenkins-Server"
-  }
-}
 
 
 
