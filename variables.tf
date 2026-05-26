@@ -9,3 +9,13 @@ variable "ecr_repo_name" {
 variable "instance_type" {
   default = "t2.micro"
 }
+
+variable "app_name" {
+  type    = string
+  default = "mandi"
+}
+
+variable "app_port" {
+  type    = number
+  default = 8080
+}
